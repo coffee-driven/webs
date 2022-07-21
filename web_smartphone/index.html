@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<meta charset="UTF-8">
+<html>
+    <head>
+        <script>
+
+            function clearScreen() {
+                currentTime(false);
+                hidCalendarIcon();
+                hidHomeIcon();
+                hidEmailIcon();
+                hidBottom();
+                hidMainButton();
+                
+                let pos = document.getElementById("board");
+                pos.innerHTML = ''
+
+            }
+
+            function currentTime(show) {
+
+                if( show === true) {
+
+                    let date = new Date();
+                    let hh = date.getHours();
+                    let mm = date.getMinutes();
+                    let ss = date.getSeconds();
+    
+                    hh = (hh < 10) ? "0" + hh : hh;
+                    mm = (mm < 10) ? "0" + mm : mm;
+                    ss = (ss < 10) ? "0" + ss : ss;
+                    
+                    let time = hh + ":" + mm + ":" + ss;
+                    
+                    let clock = document.getElementById("clock")
+                    clock.id = "clock";
+                    clock.style.display = "inline-block";
+                    clock.innerText = time;
+
+                    t = setTimeout(function(){ currentTime(true)}, 1000);
+
+                } 
+                else {
+                    clearTimeout(t)
+                    document.getElementById("clock").style.display = "none";
+                }
+            }
+            
+            function fillScreen() {
+                /* Middle screen  is hidden by default, this f() set everything to visible */
+                currentTime(true);
+                showBottom();
+                showMainButton();
+            }
+
+            function getStatus() {
+
+                var user_name = "user";
+                var app_password = "password";
+                var auth = btoa('user:password');
+                const xhttp = new XMLHttpRequest();
+
+                /* run in bg, shall be websocket */
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var res = JSON.parse(this.responseText);
+
+                        console.log(res);
+                        
+                        var status = JSON.stringify(res['STATUS'])
+                        document.getElementById("board").innerHTML =
+                            "This is gathered from server with basic auth.: " + status;
+                    }
+                }
+
+                xhttp.open("GET", 'status.json');
+                /* base64 encoded user:password in header, works with Nginx basic auth */
+                xhttp.setRequestHeader("Authorization", "Basic " + auth);
+                xhttp.send();
+                
+            }
+
+            function hidBottom() {
+                let b = document.getElementById("bottom");
+                b.style.display = "none";
+            }
+
+            function hidCalendarIcon() {
+                let hid_cal = document.getElementById("cal");
+                hid_cal.style.display = "none"; 
+            }
+
+            function hidEmailIcon() {
+                let home_icon = document.getElementById("ema");
+                home_icon.style.display = "none";
+            }
+
+            function hidHomeIcon() {
+                let home_icon = document.getElementById("hom");
+                home_icon.style.display = "none";
+            }
+
+            function hidMainButton() {
+                let b = document.getElementById("mainbutton");
+                b.style.display = "none";
+            }
+
+            function showBottom() {
+                let b = document.getElementById("bottom");
+                b.style.display = "inline-block";
+            }
+
+            function showCalendar() {
+                let pos = document.getElementById("board")
+                pos.innerHTML = ("Calendar events!!!")
+            }
+
+            function showEmail() {
+                let time_now = new Date()
+                let time = time_now.toDateString() 
+                document.getElementById("board").innerHTML = 
+                    time  + '<br/>' + "Hello," + " How are you?";
+            }
+
+            function showHome() {
+                let pos = document.getElementById("board");
+                pos.innerHTML = ("Welcome home!");
+            }
+
+            function showCalendarIcon() {
+                let c = document.getElementById("cal");
+                c.style.display = "inline-block";
+            }
+
+            function showHomeIcon() {
+                let home_icon = document.getElementById("hom");
+                home_icon.style.display = "inline-block";
+            }
+
+            function showEmailIcon() {
+                let home_icon = document.getElementById("ema");
+                home_icon.style.display = "inline-block";
+            }
+
+            function showMainButton() {
+                let b = document.getElementById("mainbutton");
+                b.style.display = "inline-block";
+            }
+
+            function showIcons() {
+                showCalendarIcon();
+                showEmailIcon();
+                showHomeIcon();
+            }
+
+        </script>
+
+        <style>
+            .board {    
+                width: 6cm;
+                height: 5cm;
+                position: absolute;
+                color: white;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                font-size: large;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;   
+            }
+
+            body {
+                background-image: url('images/simple_bg.png');;
+                background-repeat: repeat;
+                background-color: purple;
+                background-size: cover;
+            }
+
+            .bottom {
+                display: none;
+                border: none;
+                border-color: black;
+                border-radius: 0px 0px 10px 10px;
+                background-color: black;
+                width: 80mm;
+                height: 1cm;
+                position: absolute;
+                top: 96%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+
+            h1 {
+                color: white
+            }
+
+            p {
+                color: white
+            }
+
+            .calendar {
+                border-radius: 10px;
+                display: none;
+                border: none;
+                color: red;
+                text-decoration: none;
+                padding: 24px 24px;
+                background-image: url('images/calendar.png');
+
+            }
+            .calendar:hover {
+                background-color: grey;
+            }
+
+            .clock {
+                display: none;
+                background-color: black;
+                color: green;
+                border-radius: 4px;
+                border-style:groove;
+                border-color: black;
+                font-family:Arial, Helvetica, sans-serif;
+                font-size: x-large;
+                position: absolute;
+                margin-top: 5mm;
+                margin-left: 5cm;
+            }
+    
+            .home {
+                display: none;
+
+                border-radius: 10px;
+                background-image: url('images/home.png');
+                padding: 24px 24px;
+                border: none;
+                color: green;
+                text-decoration: none;
+            }
+            .home:hover{
+                background-color: grey;
+            }
+                
+            .email {
+                border-radius: 10px;
+                border: none;
+                color: blue;
+                display: none;
+                background-image: url('images/email.png');
+                padding: 24px 24px;
+                text-decoration: none;
+            }
+            .email:hover{
+                background-color: grey;
+            }
+    
+            .mainbutton {
+                border-radius: 10px;
+                display: none;
+                border: none;
+                color: red;
+                background-image: url('images/button.png');
+                background-size: cover;
+                text-decoration: none;
+                position: absolute;
+                margin-left: 35mm;
+                padding: 18px 18px;
+            }
+
+            nav {
+                padding: 18px 18px;
+                border: none;
+                text-decoration: none;
+            }
+
+
+            .screen {
+                width: 8cm;
+                height: 12cm;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                font-size: large;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;   
+            }
+
+            .screen:hover{
+                /* Must be via CSS because object mus exist before JS manipulates it */
+                background-image: url('images/universe-galaxy.gif'  );
+                background-color: black;
+                background-size: cover;
+                border-color: silver;
+                border-radius: 20px;
+                border-style: double double groove groove ;
+                border-width: 3mm;
+            }
+
+        </style>
+
+        <title> Web smartphone </title>
+    
+    </head>
+    <body>
+
+        <h1> Testing web page - HTML5, JavaScript and CSS </h1>
+
+        <nav>
+            <button onclick="fillScreen()"> SHOW </button>
+            <button onclick="clearScreen()"> HIDE </button>
+        </nav>
+
+        <!-- SCREEN IN CENTER OF THE PAGE-->
+        <div id="top" class="screen" onpointerenter="fillScreen()" onpointerleave="clearScreen()">
+
+            <div id="clock" class="clock"></div>
+            
+            <!-- ICONS ON THE TOP -->
+            <table>
+                <tr>
+                    <th><button id="cal" onclick="showCalendar()" class="calendar"></button></th>
+                    <th><button id="ema" onclick="getStatus()" class="email"></button></th>
+                    <th><button id="hom" onclick="showHome()" class="home"></button></th>
+                </tr>
+            </table>
+
+            <!-- PRINTING AREA, MESSAGES -->
+            <div id="board" class="board"></div>
+
+            <!-- BUTTON AT THE BOTTOM -->
+            <div id="bottom" class="bottom">
+                <button id="mainbutton" class="mainbutton" onpointerenter="showIcons()"></button>
+            </div>
+
+        </div>
+    </body>
+</html>
